@@ -234,19 +234,56 @@
 
     <script>
         const path = window.location.pathname;
-        const jobMatch = path.match(/\/job\/(\d+)/);
-        const jobId = jobMatch ? jobMatch[1] : null;
+        // ✅ Short code se match kar (abc123def format)
+        const shortCodeMatch = path.match(/\/job\/([a-zA-Z0-9]+)$/);
+        const shortCode = shortCodeMatch ? shortCodeMatch[1] : null;
         
-        // ✅ OCEANSEA scheme (matches Android manifest)
-        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
+        // ✅ Check kar ke short code numeric ID nahi hai
+        const isNumeric = shortCode && /^\d+$/.test(shortCode);
         
-        document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
-        document.getElementById('openAppBtn').href = deepLink;
+        let jobId = null;
+        let jobInfo = 'Browse Jobs';
         
-        if (jobId) {
-            setTimeout(function() {
+        if (shortCode && !isNumeric) {
+            // ✅ Short code hai - backend se job details fetch kar
+            jobInfo = 'Loading job details...';
+            
+            // API call to get job details from short code
+            fetch(`/api/job-share/short/${shortCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    jobId = data.jobPostId;
+                    jobInfo = `Job #${jobId}`;
+                    document.getElementById('jobInfo').textContent = jobInfo;
+                    
+                    // ✅ Deep link with actual jobPostId
+                    const deepLink = `oceansea://job/${jobId}`;
+                    document.getElementById('openAppBtn').href = deepLink;
+                    
+                    // Auto redirect after 800ms
+                    setTimeout(() => {
+                        window.location.href = deepLink;
+                    }, 800);
+                })
+                .catch(error => {
+                    console.error('Error fetching job:', error);
+                    document.getElementById('jobInfo').textContent = 'Job not found';
+                });
+        } else if (isNumeric) {
+            // ✅ Old numeric ID format (backward compatibility)
+            jobId = shortCode;
+            jobInfo = `Job #${jobId}`;
+            document.getElementById('jobInfo').textContent = jobInfo;
+            
+            const deepLink = `oceansea://job/${jobId}`;
+            document.getElementById('openAppBtn').href = deepLink;
+            
+            setTimeout(() => {
                 window.location.href = deepLink;
             }, 800);
+        } else {
+            // No job ID
+            document.getElementById('jobInfo').textContent = jobInfo;
         }
     </script>
 </body>
