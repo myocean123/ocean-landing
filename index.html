@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iEnect</title>
+    <title>iEnect - Job Opportunity</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -44,11 +44,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
         
         .card {
@@ -94,7 +89,7 @@
         
         .job-id {
             color: #0A66C2;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             margin-bottom: 32px;
             padding: 12px 20px;
@@ -147,7 +142,7 @@
         
         .divider {
             margin: 28px 0 24px;
-            color: #ddd;
+            color: #999;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -159,24 +154,6 @@
             color: #999;
             font-size: 12px;
             font-weight: 500;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #0A66C2;
-            margin: 0 3px;
-            animation: pulse 1.4s infinite;
-        }
-        
-        .loading:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .loading:nth-child(3) {
-            animation-delay: 0.4s;
         }
 
         @media (max-width: 480px) {
@@ -199,13 +176,11 @@
     <div class="card">
         <div class="icon-wrapper">
             <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- iEnect Logo: Connected nodes forming a network -->
                 <circle cx="25" cy="25" r="8" fill="white" stroke="white" stroke-width="2"/>
                 <circle cx="12" cy="15" r="6" fill="white" opacity="0.7"/>
                 <circle cx="38" cy="15" r="6" fill="white" opacity="0.7"/>
                 <circle cx="12" cy="35" r="6" fill="white" opacity="0.7"/>
                 <circle cx="38" cy="35" r="6" fill="white" opacity="0.7"/>
-                <!-- Connection lines -->
                 <line x1="25" y1="25" x2="12" y2="15" stroke="white" stroke-width="1.5" opacity="0.6"/>
                 <line x1="25" y1="25" x2="38" y2="15" stroke="white" stroke-width="1.5" opacity="0.6"/>
                 <line x1="25" y1="25" x2="12" y2="35" stroke="white" stroke-width="1.5" opacity="0.6"/>
@@ -215,11 +190,7 @@
         <h1>iEnect</h1>
         <p class="subtitle">Connect Your Career</p>
         
-        <p class="job-id" id="jobInfo">
-            <span class="loading"></span>
-            <span class="loading"></span>
-            <span class="loading"></span>
-        </p>
+        <p class="job-id" id="jobInfo">Loading...</p>
         
         <a id="openAppBtn" class="btn btn-primary" href="#">📱 Open in App</a>
         
@@ -233,68 +204,23 @@
     </div>
 
     <script>
+        // URL se job ID nikalo
         const path = window.location.pathname;
-        // ✅ Short code se match kar (abc123def format)
-        const shortCodeMatch = path.match(/\/job\/([a-zA-Z0-9]+)$/);
-        const shortCode = shortCodeMatch ? shortCodeMatch[1] : null;
+        const jobMatch = path.match(/\/job\/(\d+)/);
+        const jobId = jobMatch ? jobMatch[1] : null;
         
-        // ✅ Check kar ke short code numeric ID nahi hai
-        const isNumeric = shortCode && /^\d+$/.test(shortCode);
+        // Deep link banao
+        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
         
-        let jobId = null;
-        let jobInfo = 'Browse Jobs';
+        // UI update karo
+        document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
+        document.getElementById('openAppBtn').href = deepLink;
         
-        if (shortCode && !isNumeric) {
-            // ✅ Short code hai - backend se job details fetch kar
-            jobInfo = 'Loading job details...';
-            document.getElementById('jobInfo').textContent = jobInfo;
-            
-            // ✅ /api remove kar - sahi endpoint
-            const apiUrl = `/job-share/short/${shortCode}`;
-            console.log('Fetching from:', apiUrl);
-            
-            fetch(apiUrl)
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Data received:', data);
-                    jobId = data.jobPostId;
-                    jobInfo = `Job #${jobId}`;
-                    document.getElementById('jobInfo').textContent = jobInfo;
-                    
-                    // ✅ Deep link with actual jobPostId
-                    const deepLink = `oceansea://job/${jobId}`;
-                    document.getElementById('openAppBtn').href = deepLink;
-                    
-                    // Auto redirect after 800ms
-                    setTimeout(() => {
-                        window.location.href = deepLink;
-                    }, 800);
-                })
-                .catch(error => {
-                    console.error('Error fetching job:', error);
-                    document.getElementById('jobInfo').textContent = 'Job not found';
-                });
-        } else if (isNumeric) {
-            // ✅ Old numeric ID format (backward compatibility)
-            jobId = shortCode;
-            jobInfo = `Job #${jobId}`;
-            document.getElementById('jobInfo').textContent = jobInfo;
-            
-            const deepLink = `oceansea://job/${jobId}`;
-            document.getElementById('openAppBtn').href = deepLink;
-            
-            setTimeout(() => {
+        // Auto redirect to app (agar job ID hai)
+        if (jobId) {
+            setTimeout(function() {
                 window.location.href = deepLink;
             }, 800);
-        } else {
-            // No job ID
-            document.getElementById('jobInfo').textContent = jobInfo;
         }
     </script>
 </body>
