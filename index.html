@@ -178,14 +178,16 @@
         const params = new URLSearchParams(window.location.search);
         
         let deepLink = 'oceansea://';
+        let intentUrl = '';
         let displayText = 'Browse App';
         let isProfile = false;
         
-        // ✅ Check for Job: /job/123
-        const jobMatch = path.match(/\/job\/(\d+)/);
+        // ✅ Check for Job: /job/123 or /job/abc123
+        const jobMatch = path.match(/\/job\/([a-zA-Z0-9]+)/);
         if (jobMatch) {
             const jobId = jobMatch[1];
             deepLink = 'oceansea://job/' + jobId;
+            intentUrl = 'intent://job/' + jobId + '#Intent;scheme=oceansea;package=com.ocean;end';
             displayText = 'Job #' + jobId;
         }
         
@@ -194,6 +196,7 @@
         if (profileMatch) {
             const profileId = profileMatch[2];
             deepLink = 'oceansea://shared-profile/' + profileId;
+            intentUrl = 'intent://shared-profile/' + profileId + '#Intent;scheme=oceansea;package=com.ocean;end';
             displayText = 'View Profile';
             isProfile = true;
         }
@@ -202,13 +205,17 @@
         const queryId = params.get('id');
         if (queryId && !jobMatch) {
             deepLink = 'oceansea://shared-profile/' + queryId;
+            intentUrl = 'intent://shared-profile/' + queryId + '#Intent;scheme=oceansea;package=com.ocean;end';
             displayText = 'View Profile';
             isProfile = true;
         }
         
         // Update UI
         document.getElementById('infoBadge').textContent = displayText;
-        document.getElementById('openAppBtn').href = deepLink;
+        
+        // ✅ Use Intent URL for Android (forces app to open)
+        const finalUrl = intentUrl || deepLink;
+        document.getElementById('openAppBtn').href = finalUrl;
         
         // Add profile styling if needed
         if (isProfile) {
@@ -219,10 +226,10 @@
             document.getElementById('openAppBtn').textContent = '👤 View Profile in App';
         }
         
-        // Auto redirect to app
+        // ✅ Auto redirect using Intent URL
         if (jobMatch || profileMatch || queryId) {
             setTimeout(function() {
-                window.location.href = deepLink;
+                window.location.href = finalUrl;
             }, 800);
         }
     </script>
