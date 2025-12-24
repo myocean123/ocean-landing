@@ -3,70 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ocean Jobs</title>
+    <title>iEnect</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0A66C2, #004182);
+            background: linear-gradient(135deg, #0A66C2 0%, #004B87 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
         .card {
             background: white;
-            border-radius: 20px;
-            padding: 40px 24px;
-            max-width: 380px;
+            border-radius: 24px;
+            padding: 48px 32px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
         }
-        .logo { font-size: 50px; margin-bottom: 16px; }
-        h1 { color: #333; font-size: 26px; margin-bottom: 8px; }
+        
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #0A66C2, #004B87);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 25px rgba(10, 102, 194, 0.2);
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+        
         .job-id {
             color: #0A66C2;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 24px;
-            padding: 10px 16px;
-            background: #EBF4FF;
-            border-radius: 8px;
+            margin-bottom: 32px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #EBF4FF, #F0F8FF);
+            border-radius: 12px;
             display: inline-block;
+            border: 1px solid rgba(10, 102, 194, 0.1);
         }
+        
         .btn {
             display: block;
             width: 100%;
             padding: 16px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
             text-decoration: none;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
         }
-        .btn-primary { background: #0A66C2; color: white; }
-        .btn-green { background: #25D366; color: white; }
-        .divider { margin: 20px 0; color: #999; font-size: 14px; }
-        .footer { margin-top: 20px; color: #888; font-size: 12px; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0A66C2, #004B87);
+            color: white;
+            box-shadow: 0 8px 20px rgba(10, 102, 194, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(10, 102, 194, 0.35);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #0A66C2;
+            border: 2px solid #0A66C2;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+        
+        .divider {
+            margin: 28px 0 24px;
+            color: #ddd;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .footer {
+            margin-top: 24px;
+            color: #999;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #0A66C2;
+            margin: 0 3px;
+            animation: pulse 1.4s infinite;
+        }
+        
+        .loading:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 40px 24px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="logo">💼</div>
-        <h1>Ocean Jobs</h1>
-        <p class="job-id" id="jobInfo">Loading...</p>
+        <div class="icon-wrapper">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- iEnect Logo: Connected nodes forming a network -->
+                <circle cx="25" cy="25" r="8" fill="white" stroke="white" stroke-width="2"/>
+                <circle cx="12" cy="15" r="6" fill="white" opacity="0.7"/>
+                <circle cx="38" cy="15" r="6" fill="white" opacity="0.7"/>
+                <circle cx="12" cy="35" r="6" fill="white" opacity="0.7"/>
+                <circle cx="38" cy="35" r="6" fill="white" opacity="0.7"/>
+                <!-- Connection lines -->
+                <line x1="25" y1="25" x2="12" y2="15" stroke="white" stroke-width="1.5" opacity="0.6"/>
+                <line x1="25" y1="25" x2="38" y2="15" stroke="white" stroke-width="1.5" opacity="0.6"/>
+                <line x1="25" y1="25" x2="12" y2="35" stroke="white" stroke-width="1.5" opacity="0.6"/>
+                <line x1="25" y1="25" x2="38" y2="35" stroke="white" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+        </div>
+        <h1>iEnect</h1>
+        <p class="subtitle">Connect Your Career</p>
         
-        <a id="openAppBtn" class="btn btn-primary" href="#">📱 Open in App</a>
+        <p class="job-id" id="jobInfo">
+            <span class="loading"></span>
+            <span class="loading"></span>
+            <span class="loading"></span>
+        </p>
         
-        <div class="divider">— App nahi hai? —</div>
+        <a id="openAppBtn" class="btn btn-primary" href="#"> Open in App</a>
         
-        <a class="btn btn-green" href="https://play.google.com/store/apps/details?id=com.ocean">
-            ⬇️ Download App
+        <div class="divider">Don't have the app?</div>
+        
+        <a class="btn btn-secondary" href="https://play.google.com/store" target="_blank">
+            ⬇️ Download from Play Store
         </a>
         
-        <p class="footer">🚀 Ocean - Your Career Awaits!</p>
+        <p class="footer">🚀 Your career awaits</p>
     </div>
 
     <script>
@@ -74,7 +237,7 @@
         const jobMatch = path.match(/\/job\/(\d+)/);
         const jobId = jobMatch ? jobMatch[1] : null;
         
-        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
+        const deepLink = jobId ? 'ienect://job/' + jobId : 'ienect://';
         
         document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
         document.getElementById('openAppBtn').href = deepLink;
@@ -82,7 +245,7 @@
         if (jobId) {
             setTimeout(function() {
                 window.location.href = deepLink;
-            }, 500);
+            }, 800);
         }
     </script>
 </body>
