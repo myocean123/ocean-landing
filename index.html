@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Jobs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0A66C2, #004182);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .logo { font-size: 50px; margin-bottom: 16px; }
+        h1 { color: #333; font-size: 26px; margin-bottom: 8px; }
+        .job-id {
+            color: #0A66C2;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding: 10px 16px;
+            background: #EBF4FF;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 12px;
+        }
+        .btn-primary { background: #0A66C2; color: white; }
+        .btn-green { background: #25D366; color: white; }
+        .divider { margin: 20px 0; color: #999; font-size: 14px; }
+        .footer { margin-top: 20px; color: #888; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">💼</div>
+        <h1>Ocean Jobs</h1>
+        <p class="job-id" id="jobInfo">Loading...</p>
+        
+        <a id="openAppBtn" class="btn btn-primary" href="#">📱 Open in App</a>
+        
+        <div class="divider">— App nahi hai? —</div>
+        
+        <a class="btn btn-green" href="https://play.google.com/store/apps/details?id=com.ocean">
+            ⬇️ Download App
+        </a>
+        
+        <p class="footer">🚀 Ocean - Your Career Awaits!</p>
+    </div>
+
+    <script>
+        const path = window.location.pathname;
+        const jobMatch = path.match(/\/job\/(\d+)/);
+        const jobId = jobMatch ? jobMatch[1] : null;
+        
+        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
+        
+        document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
+        document.getElementById('openAppBtn').href = deepLink;
+        
+        if (jobId) {
+            setTimeout(function() {
+                window.location.href = deepLink;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
