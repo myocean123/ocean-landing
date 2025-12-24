@@ -225,7 +225,7 @@
         
         <div class="divider">Don't have the app?</div>
         
-        <a class="btn btn-secondary" href="https://play.google.com/store" target="_blank">
+        <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.ocean" target="_blank">
             ⬇️ Download from Play Store
         </a>
         
@@ -237,7 +237,8 @@
         const jobMatch = path.match(/\/job\/(\d+)/);
         const jobId = jobMatch ? jobMatch[1] : null;
         
-        const deepLink = jobId ? 'ienect://job/' + jobId : 'ienect://';
+        // ✅ OCEANSEA scheme (matches Android manifest)
+        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
         
         document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
         document.getElementById('openAppBtn').href = deepLink;
