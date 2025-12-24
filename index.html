@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iEnect - Job Opportunity</title>
+    <title>iEnect</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,20 +30,18 @@
             animation: float 6s ease-in-out infinite;
         }
         
+        body.profile-page {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        }
+        
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(20px); }
         }
         
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .card {
@@ -72,22 +70,15 @@
             box-shadow: 0 10px 25px rgba(10, 102, 194, 0.2);
         }
         
-        h1 {
-            color: #1a1a1a;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: -0.5px;
+        .icon-wrapper.profile {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.2);
         }
         
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 28px;
-            font-weight: 500;
-        }
+        h1 { color: #1a1a1a; font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 28px; font-weight: 500; }
         
-        .job-id {
+        .info-badge {
             color: #0A66C2;
             font-size: 18px;
             font-weight: 600;
@@ -97,6 +88,12 @@
             border-radius: 12px;
             display: inline-block;
             border: 1px solid rgba(10, 102, 194, 0.1);
+        }
+        
+        .info-badge.profile {
+            color: #28a745;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-color: rgba(40, 167, 69, 0.1);
         }
         
         .btn {
@@ -111,7 +108,6 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 0.3px;
         }
         
         .btn-primary {
@@ -120,14 +116,13 @@
             box-shadow: 0 8px 20px rgba(10, 102, 194, 0.25);
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(10, 102, 194, 0.35);
+        .btn-primary.profile {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.25);
         }
         
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-primary:active { transform: translateY(0); }
         
         .btn-secondary {
             background: white;
@@ -135,46 +130,21 @@
             border: 2px solid #0A66C2;
         }
         
-        .btn-secondary:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-        }
+        .btn-secondary:hover { background: #f8f9fa; transform: translateY(-2px); }
         
-        .divider {
-            margin: 28px 0 24px;
-            color: #999;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-        
-        .footer {
-            margin-top: 24px;
-            color: #999;
-            font-size: 12px;
-            font-weight: 500;
-        }
+        .divider { margin: 28px 0 24px; color: #999; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .footer { margin-top: 24px; color: #999; font-size: 12px; font-weight: 500; }
 
         @media (max-width: 480px) {
-            .card {
-                padding: 40px 24px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .btn {
-                padding: 14px;
-                font-size: 14px;
-            }
+            .card { padding: 40px 24px; }
+            h1 { font-size: 24px; }
+            .btn { padding: 14px; font-size: 14px; }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="icon-wrapper">
+        <div class="icon-wrapper" id="iconWrapper">
             <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="25" cy="25" r="8" fill="white" stroke="white" stroke-width="2"/>
                 <circle cx="12" cy="15" r="6" fill="white" opacity="0.7"/>
@@ -190,7 +160,7 @@
         <h1>iEnect</h1>
         <p class="subtitle">Connect Your Career</p>
         
-        <p class="job-id" id="jobInfo">Loading...</p>
+        <p class="info-badge" id="infoBadge">Loading...</p>
         
         <a id="openAppBtn" class="btn btn-primary" href="#">📱 Open in App</a>
         
@@ -204,20 +174,53 @@
     </div>
 
     <script>
-        // URL se job ID nikalo
         const path = window.location.pathname;
+        const params = new URLSearchParams(window.location.search);
+        
+        let deepLink = 'oceansea://';
+        let displayText = 'Browse App';
+        let isProfile = false;
+        
+        // ✅ Check for Job: /job/123
         const jobMatch = path.match(/\/job\/(\d+)/);
-        const jobId = jobMatch ? jobMatch[1] : null;
+        if (jobMatch) {
+            const jobId = jobMatch[1];
+            deepLink = 'oceansea://job/' + jobId;
+            displayText = 'Job #' + jobId;
+        }
         
-        // Deep link banao
-        const deepLink = jobId ? 'oceansea://job/' + jobId : 'oceansea://';
+        // ✅ Check for Profile: /profile/abc123 or /shared-profile/abc123
+        const profileMatch = path.match(/\/(profile|shared-profile)\/([a-zA-Z0-9-]+)/);
+        if (profileMatch) {
+            const profileId = profileMatch[2];
+            deepLink = 'oceansea://shared-profile/' + profileId;
+            displayText = 'View Profile';
+            isProfile = true;
+        }
         
-        // UI update karo
-        document.getElementById('jobInfo').textContent = jobId ? 'Job #' + jobId : 'Browse Jobs';
+        // ✅ Check for query param: ?id=abc123 (for profile)
+        const queryId = params.get('id');
+        if (queryId && !jobMatch) {
+            deepLink = 'oceansea://shared-profile/' + queryId;
+            displayText = 'View Profile';
+            isProfile = true;
+        }
+        
+        // Update UI
+        document.getElementById('infoBadge').textContent = displayText;
         document.getElementById('openAppBtn').href = deepLink;
         
-        // Auto redirect to app (agar job ID hai)
-        if (jobId) {
+        // Add profile styling if needed
+        if (isProfile) {
+            document.body.classList.add('profile-page');
+            document.getElementById('iconWrapper').classList.add('profile');
+            document.getElementById('infoBadge').classList.add('profile');
+            document.getElementById('openAppBtn').classList.add('profile');
+            document.getElementById('openAppBtn').textContent = '👤 View Profile in App';
+        }
+        
+        // Auto redirect to app
+        if (jobMatch || profileMatch || queryId) {
             setTimeout(function() {
                 window.location.href = deepLink;
             }, 800);
