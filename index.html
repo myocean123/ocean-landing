@@ -247,11 +247,22 @@
         if (shortCode && !isNumeric) {
             // ✅ Short code hai - backend se job details fetch kar
             jobInfo = 'Loading job details...';
+            document.getElementById('jobInfo').textContent = jobInfo;
             
-            // API call to get job details from short code
-            fetch(`/api/job-share/short/${shortCode}`)
-                .then(response => response.json())
+            // ✅ /api remove kar - sahi endpoint
+            const apiUrl = `/job-share/short/${shortCode}`;
+            console.log('Fetching from:', apiUrl);
+            
+            fetch(apiUrl)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Data received:', data);
                     jobId = data.jobPostId;
                     jobInfo = `Job #${jobId}`;
                     document.getElementById('jobInfo').textContent = jobInfo;
