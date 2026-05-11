@@ -1,5 +1,4 @@
 [deploy]
-startCommand = "npx serve . -s -l 8080"
-
+startCommand = "npx serve . -l 8080"
 [build]
 builder = "nixpacks"
