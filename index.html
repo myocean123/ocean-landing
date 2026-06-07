@@ -1151,7 +1151,7 @@
         </p>
         <div class="hero-actions">
           <a
-            href="https://play.google.com/store/apps/details?id=com.ocean"
+            href="https://play.google.com/store/apps/details?id=com.xzore.app"
             target="_blank"
             class="btn-hero-primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
@@ -1456,7 +1456,7 @@
           </p>
           <div class="download-btns">
             <a
-              href="https://play.google.com/store/apps/details?id=com.ocean"
+              href="https://play.google.com/store/apps/details?id=com.xzore.app"
               target="_blank"
               class="download-btn">
               <div class="download-btn-icon">
@@ -1607,7 +1607,7 @@
         <div class="modal-divider">Don't have the app?</div>
         <a
           class="modal-store-btn"
-          href="https://play.google.com/store/apps/details?id=com.ocean"
+          href="https://play.google.com/store/apps/details?id=com.xzore.app"
           target="_blank">
           <svg
             width="16"
@@ -1653,36 +1653,20 @@
         isJob = true;
       }
 
-      const profileMatch = path.match(
-        /\/(profile|shared-profile)\/([a-zA-Z0-9-]+)/,
-      );
+      // ✅ Naya — username based
+      const profileMatch = path.match(/\/profile\/([a-zA-Z0-9_.-]+)/);
       if (profileMatch) {
-        const profileId = profileMatch[2];
-        deepLink = APP_SCHEME + '://shared-profile/' + profileId;
+        const username = profileMatch[1];
+        deepLink = APP_SCHEME + '://profile/' + username;
         intentUrl =
-          'intent://shared-profile/' +
-          profileId +
+          'intent://profile/' +
+          username +
           '#Intent;scheme=' +
           APP_SCHEME +
           ';package=' +
           APP_PACKAGE +
           ';end';
-        displayText = 'View Profile';
-        isProfile = true;
-      }
-
-      const queryId = params.get('id');
-      if (queryId && !jobMatch) {
-        deepLink = APP_SCHEME + '://shared-profile/' + queryId;
-        intentUrl =
-          'intent://shared-profile/' +
-          queryId +
-          '#Intent;scheme=' +
-          APP_SCHEME +
-          ';package=' +
-          APP_PACKAGE +
-          ';end';
-        displayText = 'View Profile';
+        displayText = username;
         isProfile = true;
       }
 
