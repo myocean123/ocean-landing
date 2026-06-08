@@ -1,4 +1,4 @@
 [deploy]
-startCommand = "npx serve . -l 8080 --no-clipboard"
+startCommand = "node server.js"
 [build]
 builder = "nixpacks"
