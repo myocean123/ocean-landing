@@ -1,9 +1,10 @@
 {
   "name": "ocean-landing",
   "scripts": {
-    "start": "npx serve . -s -l 8080"
+    "start": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.0.0"
+    "serve": "^14.0.0",
+    "express": "^4.18.2"
   }
 }
