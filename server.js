@@ -1,0 +1,28 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+
+// ✅ assetlinks.json seedha serve karo
+app.get('/.well-known/assetlinks.json', (req, res) => {
+  res.json([{
+    relation: ['delegate_permission/common.handle_all_urls'],
+    target: {
+      namespace: 'android_app',
+      package_name: 'com.xzore.app',
+      sha256_cert_fingerprints: [
+        '8D:24:02:DD:A0:80:6B:25:EA:75:0F:45:6A:2E:00:1D:B5:70:ED:F6:2D:ED:08:D7:F6:0C:CD:8F:26:B0:E1:B0',
+        'DD:22:05:B0:76:3D:7C:76:9F:5F:83:CC:B2:98:02:BA:0E:3A:42:9A:E2:29:02:6B:31:34:B2:87:C0:D8:2E:27'
+      ]
+    }
+  }]);
+});
+
+// Static files
+app.use(express.static(path.join(__dirname)));
+
+// SPA fallback
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(8080);
